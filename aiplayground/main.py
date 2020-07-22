@@ -54,7 +54,7 @@ def feedback():
     if feedback == 'Incorrect':
         y = int(not (y))
     train(mood, y)
-    sqlite_entry(db, mood, y)
+    add_db_entry(mood, y)
     return render_template('thanks.html', domain=domain, system_info_text=get_system_info())
 
 
@@ -62,6 +62,30 @@ def feedback():
 def system_info():
     app.logger.info(sys._getframe().f_code.co_name)
     return get_system_info()
+
+
+@app.errorhandler(404)
+def page_not_found():
+    app.logger.info(sys._getframe().f_code.co_name)
+    return 'The resource could not be found.'
+
+
+@app.route('/api/moods', methods=['GET'])
+def api_filter():
+    app.logger.info(sys._getframe().f_code.co_name)
+    sentiment = request.args.get('sentiment')
+    query = 'SELECT * FROM moods_db WHERE'
+    filter = []
+    if sentiment:
+        query += ' sentiment=? AND'
+        filter.append(sentiment)
+    if not (sentiment):
+        return page_not_found()
+    query = query[:-4]
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+    res = c.execute(query, filter).fetchall()
+    return jsonify(res)
 
 
 def classify(document):
@@ -81,11 +105,11 @@ def train(document, y):
     clf.partial_fit(X, [y])
 
 
-def sqlite_entry(path, document, y):
+def add_db_entry(mood, sentiment):
     app.logger.info(sys._getframe().f_code.co_name)
-    conn = sqlite3.connect(path)
+    conn = sqlite3.connect(db)
     c = conn.cursor()
-    c.execute("INSERT INTO moods_db (mood, sentiment, date) VALUES (?, ?, DATETIME('now'))", (document, y))
+    c.execute("INSERT INTO moods_db (mood, sentiment, date) VALUES (?, ?, DATETIME('now'))", (mood, sentiment))
     conn.commit()
     conn.close()
 
