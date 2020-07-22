@@ -1,13 +1,13 @@
+# -*- coding: utf-8 -*-
 from sklearn.feature_extraction.text import HashingVectorizer
 import re
-import os
-import pickle
-import sys
 
-def do(stopwords):
-    global stop 
+
+def getStopwords(stopwords):
+    global stop
     stop = stopwords
     return HashingVectorizer(decode_error='ignore',n_features=2**21,preprocessor=None,tokenizer=tokenizer)
+
 
 def tokenizer(text):
     text = re.sub('<[^>]*>', '', text)
