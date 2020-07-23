@@ -17,6 +17,7 @@
     <h3>Your mood:</h3>
     <div>{{ content }}</div>
     <h3>Prediction:</h3>
+    <img src="{{ sigmoid_plot }}" alt="Sigmoidal Logistic Function"/>
     <div>Your mood is <strong>{{ prediction }}</strong> (probability: {{ probability }}%).</div>
     <div id='button'>
         <form method='post' action="/thanks" >

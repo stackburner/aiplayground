@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, send_from_directory
 from wtforms import Form, TextAreaField, validators
 import logging
 import pickle
@@ -8,6 +8,7 @@ import os
 import numpy as np
 import psutil
 import sys
+import plotter
 from aiplayground import app
 
 domain = 'aiplayground'
@@ -38,8 +39,10 @@ def results():
     if request.method == 'POST' and form.validate():
         review = request.form['mood']
         y, proba = classify(review)
+        plot_path = plotter.plot_sigmoid(proba)
         return render_template('results.html', domain=domain, content=review, prediction=y,
-                               probability=round(proba * 100, 4), system_info_text=get_system_info())
+                               probability=round(proba * 100, 4), system_info_text=get_system_info(),
+                               sigmoid_plot=plot_path)
     return render_template('index.html', domain=domain, form=form, system_info_text=get_system_info())
 
 
@@ -65,9 +68,9 @@ def system_info():
 
 
 @app.errorhandler(404)
-def page_not_found():
+def resource_not_found(e):
     app.logger.info(sys._getframe().f_code.co_name)
-    return 'The resource could not be found.'
+    return '{0}: {1}'.format(e, 'The resource could not be found.')
 
 
 @app.route('/api/moods', methods=['GET'])
@@ -80,7 +83,7 @@ def api_filter():
         query += ' sentiment=? AND'
         filter.append(sentiment)
     if not (sentiment):
-        return page_not_found()
+        return resource_not_found(sentiment)
     query = query[:-4]
     conn = sqlite3.connect(db)
     c = conn.cursor()
