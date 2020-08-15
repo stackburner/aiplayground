@@ -1,19 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-# Name: plotter.py
-# Description: This script plots graphs using matplotlib
-# Owner: Lennart Berning
-# Prerequisite: Matplotlib and Numpy
-# Python Version: 3.7
-"""
-
-# Imports
 import os
 path = os.path.join(os.path.dirname(__file__), 'static/plots')
 from sys import platform
 if platform == 'linux' or platform == 'linux2':
     os.environ['MPLCONFIGDIR'] = path
 import matplotlib.pyplot as plt
+plt.switch_backend('Agg')
 import numpy as np
 
 

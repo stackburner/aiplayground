@@ -2,3 +2,6 @@
 .idea
 venv
 aiplayground.log
+startup.py
+query.py
+__pycache__
