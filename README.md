@@ -1,10 +1,14 @@
 # Welcome
 
-This is the git repository for the aiplayground project.
+This is the aiplayground for a sentiment classifier trained on a large movie reviews dataset .
 
 ## Description
 
-A logistic regression model for sentiment analysis trained on a large reviews dataset. Built using Python's sklearn HashingVectorizer framework and brought to you via flask and ajax on an Apache2 WSGI framework.
+This logistic regression model for sentiment analysis uses Python's sklearn HashingVectorizer framework 
+and interacts with you via Flask and Ajax on an Apache2 WSGI framework.
+Most Flask setups are missing the step of deploying the application on a productive Apache2 webserver.
+For that reason I am sharing my setup with you and am looking forward to receiving suggestions / answering 
+questions regarding the configuration. 
 
 ## Live demo
 
