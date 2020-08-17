@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
 import os
-path = os.path.join(os.path.dirname(__file__), 'static/plots')
+default_path = os.path.join(os.path.dirname(__file__), 'static/plots')
+import sys
 from sys import platform
 if platform == 'linux' or platform == 'linux2':
-    os.environ['MPLCONFIGDIR'] = path
+    os.environ['MPLCONFIGDIR'] = default_path
 import matplotlib.pyplot as plt
 plt.switch_backend('Agg')
 import numpy as np
+import logging
+logger = logging.getLogger(__name__)
 
 
-def plot_sigmoid(prob=0.5, path=path):
+def plot_sigmoid(prob=0.5, path=default_path):
+    logger.info(sys._getframe().f_code.co_name)
     save_path = os.path.join(path, 'sigmoid.png')
     if os.path.exists(save_path):
         os.remove(save_path)

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, jsonify, render_template, request
 from wtforms import Form, TextAreaField, validators
-import logging
 import pickle
 import sqlite3
 import os
@@ -10,15 +9,10 @@ import psutil
 import sys
 import plotter
 from aiplayground import app
-
+import logging
+logger = logging.getLogger(__name__)
 domain = 'aiplayground'
-cdir = sys.path[0]
-log = os.path.join(cdir, 'aiplayground.log')
-db = os.path.join(cdir, 'moods.sqlite')
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
-                    filename=log,
-                    level=logging.INFO,
-                    datefmt='%Y-%m-%d %H:%M:%S')
+db = os.path.join(sys.path[0], 'moods.sqlite')
 
 
 class ReviewForm(Form):
@@ -27,14 +21,14 @@ class ReviewForm(Form):
 
 @app.route('/')
 def index():
-    app.logger.info(sys._getframe().f_code.co_name)
+    logger.info(sys._getframe().f_code.co_name)
     form = ReviewForm(request.form)
     return render_template('index.html', domain=domain, form=form, system_info_text=get_system_info())
 
 
 @app.route('/results', methods=['POST'])
 def results():
-    app.logger.info(sys._getframe().f_code.co_name)
+    logger.info(sys._getframe().f_code.co_name)
     form = ReviewForm(request.form)
     if request.method == 'POST' and form.validate():
         review = request.form['mood']
@@ -48,7 +42,7 @@ def results():
 
 @app.route('/thanks', methods=['POST'])
 def feedback():
-    app.logger.info(sys._getframe().f_code.co_name)
+    logger.info(sys._getframe().f_code.co_name)
     feedback = request.form['feedback_button']
     mood = request.form['mood']
     prediction = request.form['prediction']
@@ -63,19 +57,19 @@ def feedback():
 
 @app.route('/sys_info.json')
 def system_info():
-    app.logger.info(sys._getframe().f_code.co_name)
+    logger.info(sys._getframe().f_code.co_name)
     return get_system_info()
 
 
 @app.errorhandler(404)
 def resource_not_found(e):
-    app.logger.info(sys._getframe().f_code.co_name)
+    logger.info(sys._getframe().f_code.co_name)
     return '{0}: {1}'.format(e, 'The resource could not be found.')
 
 
 @app.route('/api/moods', methods=['GET'])
 def api_filter():
-    app.logger.info(sys._getframe().f_code.co_name)
+    logger.info(sys._getframe().f_code.co_name)
     sentiment = request.args.get('sentiment')
     query = 'SELECT * FROM moods_db WHERE'
     filter = []
@@ -92,8 +86,8 @@ def api_filter():
 
 
 def classify(document):
-    app.logger.info(sys._getframe().f_code.co_name)
-    clf, vect = getPickles()
+    logger.info(sys._getframe().f_code.co_name)
+    clf, vect = get_pickles()
     label = {0: 'negative', 1: 'positive'}
     X = vect.transform([document])
     y = clf.predict(X)[0]
@@ -102,14 +96,14 @@ def classify(document):
 
 
 def train(document, y):
-    app.logger.info(sys._getframe().f_code.co_name)
-    clf, vect = getPickles()
+    logger.info(sys._getframe().f_code.co_name)
+    clf, vect = get_pickles()
     X = vect.transform([document])
     clf.partial_fit(X, [y])
 
 
 def add_db_entry(mood, sentiment):
-    app.logger.info(sys._getframe().f_code.co_name)
+    logger.info(sys._getframe().f_code.co_name)
     conn = sqlite3.connect(db)
     c = conn.cursor()
     c.execute("INSERT INTO moods_db (mood, sentiment, date) VALUES (?, ?, DATETIME('now'))", (mood, sentiment))
@@ -117,16 +111,16 @@ def add_db_entry(mood, sentiment):
     conn.close()
 
 
-def getPickles():
-    app.logger.info(sys._getframe().f_code.co_name)
+def get_pickles():
+    logger.info(sys._getframe().f_code.co_name)
     import vectorizer
-    clf = pickle.load(open(os.path.join(cdir, 'pkl_objects', 'classifier.pkl'), 'rb'))
-    vect = vectorizer.getStopwords(pickle.load(open(os.path.join(cdir, 'pkl_objects', 'stopwords.pkl'), 'rb')))
+    clf = pickle.load(open(os.path.join(sys.path[0], 'pkl_objects', 'classifier.pkl'), 'rb'))
+    vect = vectorizer.get_stopwords(pickle.load(open(os.path.join(sys.path[0], 'pkl_objects', 'stopwords.pkl'), 'rb')))
     return clf, vect
 
 
 def get_system_info():
-    app.logger.info(sys._getframe().f_code.co_name)
+    logger.info(sys._getframe().f_code.co_name)
     info = 'System Information: [CPU: {0}%] [Memory: {1}%]'.format(str(psutil.cpu_percent()),
                                                                    str(psutil.virtual_memory()[2]))
     app.logger.info(info)
