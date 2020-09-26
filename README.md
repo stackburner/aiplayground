@@ -1,6 +1,6 @@
 # Welcome
 
-This is the aiplayground for a sentiment classifier trained on a large movie reviews dataset .
+This is the aiplayground for a sentiment classifier trained on a movie reviews dataset.
 
 ## Description
 
