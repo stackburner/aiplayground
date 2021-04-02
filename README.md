@@ -12,4 +12,4 @@ questions regarding the configuration.
 
 ## Live demo
 
-[aiplayground](http://www.lennartberning.de)
+[aiplayground](http://www.lennartberning.de/aiplayground)
