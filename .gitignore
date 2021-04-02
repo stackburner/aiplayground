@@ -1,0 +1,6 @@
+.DS_Store
+.idea
+venv
+query.py
+aiplayground.log
+__pycache__

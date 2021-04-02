@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <title>{{domain}}</title>
+    <meta name="description" content="aiplayground and machine learning space">
+    <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='style.css')}}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> 
+    <script>setInterval(function(){ $("#sys_info").load("/aiplayground/sys_info.json") },1000)</script>
+</head>
+<body>
+    <h1>{{domain}}</h1>
+    <div class="boxed">I am a logistic regression model for sentiment analysis trained on a large reviews dataset. I am built using Python's sklearn HashingVectorizer framework and am brought to you via flask and ajax on an Apache2 WSGI framework. I will try to predict your mood based on your input. Please provide feedback so that I can become smarter with every submission.</div>
+    <h2>Please enter your mood:</h2>
+    {% from "_formhelpers.html" import render_field %}
+    <form method=post action="{{ url_for('results') }}">
+        <dl>
+            {{ render_field(form.mood) }}
+        </dl>
+        <div>
+            <input type=submit value='Submit' name='submit_btn'>
+        </div>
+    </form> 
+    <p id="sys_info">{{ system_info }}</p>
+    <footer>
+        <p id='impressum'><a href="{{url_for('static', filename='impressum.html')}}">Impressum</a></p>
+    </footer>
+</body>
+</html>
