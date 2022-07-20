@@ -12,7 +12,7 @@ from aiplayground import app
 import logging
 logger = logging.getLogger(__name__)
 domain = 'aiplayground'
-db = os.path.join(sys.path[0], 'aiplayground', 'moods.sqlite')
+db = os.path.join(sys.path[0], 'moods.sqlite')
 
 
 class ReviewForm(Form):
@@ -114,8 +114,8 @@ def add_db_entry(mood, sentiment):
 def get_pickles():
     logger.info(sys._getframe().f_code.co_name)
     import vectorizer
-    clf = pickle.load(open(os.path.join(sys.path[0], 'aiplayground/pkl_objects', 'classifier.pkl'), 'rb'))
-    vect = vectorizer.get_stopwords(pickle.load(open(os.path.join(sys.path[0], 'aiplayground/pkl_objects', 'stopwords.pkl'), 'rb')))
+    clf = pickle.load(open(os.path.join(sys.path[0], 'pkl_objects', 'classifier.pkl'), 'rb'))
+    vect = vectorizer.get_stopwords(pickle.load(open(os.path.join(sys.path[0], 'pkl_objects', 'stopwords.pkl'), 'rb')))
     return clf, vect
 
 

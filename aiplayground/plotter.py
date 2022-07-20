@@ -40,4 +40,4 @@ def plot_sigmoid(prob=0.5, path=default_path):
     plt.savefig(save_path)
     plt.clf()
 
-    return save_path[save_path.find('/aiplayground/static'):]
+    return save_path[save_path.find('/static'):]
